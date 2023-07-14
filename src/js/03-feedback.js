@@ -12,7 +12,7 @@ updatePage();
 function onSubmit(evt) {
   evt.preventDefault()
   const { email, message } = evt.currentTarget.elements
-  user = {
+  const user = {
         email: email.value,
         message: message.value,
         }
