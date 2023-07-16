@@ -1,47 +1,43 @@
 import throttle from 'lodash.throttle';
 
-const formUser = document.querySelector('.feedback-form')
-console.dir(formUser);
-formUser.addEventListener('submit', throttle(onSubmit, 500));
+const form = document.querySelector('.feedback-form')
+console.dir(form);
+
+form.addEventListener('submit', onSubmit);
+form.addEventListener('input', throttle(onInput, 500));
+
+let userStoreage = {};
+
+function onInput() {
+      let { email, message } = form.elements; 
+      userStoreage = {
+            email: email.value,
+            message: message.value,
+      };
+      localStorage.setItem("feedback-form-state", JSON.stringify(userStoreage));
+};
 
 function updatePage() {
-  localStorage.removeItem("feedback-form-state");
-};
+      userStoreage = JSON.parse(localStorage.getItem("feedback-form-state"));
+      if (userStoreage === null) {
+            return
+      }
+      form.querySelector('input').value = userStoreage.email;    
+      form.querySelector('textarea').value = userStoreage.message;
+}
 updatePage();
 
 function onSubmit(evt) {
-  evt.preventDefault()
-  const { email, message } = evt.currentTarget.elements
-  const user = {
-        email: email.value,
-        message: message.value,
-        }
-  console.dir(user);
-  
-  localStorage.setItem("feedback-form-state", JSON.stringify(user));
-  
-  formUser.reset();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function updatePage() {
-//   if (localStorage.getItem("feedback-form-state") ?? {}) {
-//     return
-//   }
-  
-//   localStorage.getItem("feedback-form-state", JSON.parse(user));
-//   console.dir(localStorage.getItem("feedback-form-state", JSON.parse(user)))
-//    localStorage.removeItem("feedback-form-state");
-// }
+      evt.preventDefault()
+      let { email, message } = form.elements;
+      userStoreage = {
+            email: email.value,
+            message: message.value,
+      };
+      if (form.email.value === '' || form.message.value === '') {
+      return alert('Please fill in all fields')
+      }; 
+      console.dir(userStoreage);
+      form.reset();
+      localStorage.removeItem("feedback-form-state");
+};
